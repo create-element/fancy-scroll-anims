@@ -268,9 +268,176 @@
 		}
 	}
 
+	// Preview player class.
+	class PreviewPlayer {
+		constructor() {
+			this.toggleBtn = document.getElementById('fsa-preview-toggle');
+			this.framesGrid = document.getElementById('fsa-frames-grid');
+			this.frames = [];
+			this.currentFrame = 0;
+			this.isPlaying = false;
+			this.intervalId = null;
+			this.fps = 12;
+			this.modal = null;
+			this.slider = null;
+			this.frameImg = null;
+
+			this.init();
+		}
+
+		init() {
+			if (!this.toggleBtn || !this.framesGrid) {
+				return;
+			}
+
+			// Collect all frame URLs.
+			const frameItems = this.framesGrid.querySelectorAll('.fsa-frame-item');
+			frameItems.forEach(item => {
+				this.frames.push(item.dataset.url);
+			});
+
+			if (this.frames.length === 0) {
+				return;
+			}
+
+			// Create modal.
+			this.createModal();
+
+			// Toggle button click.
+			this.toggleBtn.addEventListener('click', () => this.openModal());
+		}
+
+		createModal() {
+			// Create modal HTML.
+			const modal = document.createElement('div');
+			modal.className = 'fsa-preview-modal';
+			modal.innerHTML = `
+				<div class="fsa-preview-content">
+					<div class="fsa-preview-header">
+						<h3>${fsaAdmin.strings.animationPreview}</h3>
+						<button type="button" class="fsa-preview-close">&times;</button>
+					</div>
+					<div class="fsa-preview-viewport">
+						<div class="fsa-preview-animation">
+							<img src="${this.frames[0]}" alt="Preview">
+						</div>
+					</div>
+					<div class="fsa-preview-controls">
+						<button type="button" class="button button-primary fsa-play-btn">
+							<span class="dashicons dashicons-controls-play"></span> ${fsaAdmin.strings.play}
+						</button>
+						<input type="range" class="fsa-preview-slider" min="0" max="${this.frames.length - 1}" value="0" step="1">
+						<div class="fsa-preview-info">
+							<span class="fsa-current-frame">1</span> / ${this.frames.length} ${fsaAdmin.strings.frames}
+						</div>
+					</div>
+				</div>
+			`;
+
+			document.body.appendChild(modal);
+			this.modal = modal;
+			this.slider = modal.querySelector('.fsa-preview-slider');
+			this.frameImg = modal.querySelector('.fsa-preview-animation img');
+			this.playBtn = modal.querySelector('.fsa-play-btn');
+			this.frameCounter = modal.querySelector('.fsa-current-frame');
+
+			// Event listeners.
+			modal.querySelector('.fsa-preview-close').addEventListener('click', () => this.closeModal());
+			modal.addEventListener('click', (e) => {
+				if (e.target === modal) {
+					this.closeModal();
+				}
+			});
+
+			this.playBtn.addEventListener('click', () => this.togglePlay());
+			this.slider.addEventListener('input', (e) => this.setFrame(parseInt(e.target.value)));
+		}
+
+		openModal() {
+			this.modal.classList.add('fsa-active');
+			this.currentFrame = 0;
+			this.updateFrame();
+		}
+
+		closeModal() {
+			this.modal.classList.remove('fsa-active');
+			this.stop();
+		}
+
+		togglePlay() {
+			if (this.isPlaying) {
+				this.stop();
+			} else {
+				this.play();
+			}
+		}
+
+		play() {
+			this.isPlaying = true;
+			this.playBtn.innerHTML = '<span class="dashicons dashicons-controls-pause"></span> ' + fsaAdmin.strings.pause;
+			
+			this.intervalId = setInterval(() => {
+				this.currentFrame = (this.currentFrame + 1) % this.frames.length;
+				this.updateFrame();
+			}, 1000 / this.fps);
+		}
+
+		stop() {
+			this.isPlaying = false;
+			this.playBtn.innerHTML = '<span class="dashicons dashicons-controls-play"></span> ' + fsaAdmin.strings.play;
+			
+			if (this.intervalId) {
+				clearInterval(this.intervalId);
+				this.intervalId = null;
+			}
+		}
+
+		setFrame(index) {
+			this.currentFrame = index;
+			this.updateFrame();
+			if (this.isPlaying) {
+				this.stop();
+			}
+		}
+
+		updateFrame() {
+			this.frameImg.src = this.frames[this.currentFrame];
+			this.slider.value = this.currentFrame;
+			this.frameCounter.textContent = this.currentFrame + 1;
+		}
+	}
+
+	// Copy shortcode functionality.
+	function initCopyShortcode() {
+		const copyBtn = document.getElementById('fsa-copy-shortcode');
+		
+		if (!copyBtn) {
+			return;
+		}
+
+		copyBtn.addEventListener('click', function() {
+			const shortcode = this.dataset.shortcode;
+			
+			navigator.clipboard.writeText(shortcode).then(() => {
+				const originalText = this.innerHTML;
+				this.innerHTML = '<span class="dashicons dashicons-yes" style="margin-top:3px;"></span> ' + fsaAdmin.strings.copied;
+				this.style.background = '#d4edda';
+				
+				setTimeout(() => {
+					this.innerHTML = originalText;
+					this.style.background = '';
+				}, 2000);
+			}).catch(() => {
+				alert(fsaAdmin.strings.copyFailed);
+			});
+		});
+	}
+
 	// Initialize on DOM ready.
 	$(document).ready(function() {
 		new FrameUploader();
+		new PreviewPlayer();
+		initCopyShortcode();
 	});
 
 })(jQuery);

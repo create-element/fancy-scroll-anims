@@ -10,7 +10,7 @@ namespace Fancy_Scroll_Anims;
 defined( 'ABSPATH' ) || die();
 
 // Plugin version.
-const VERSION = '0.3.0';
+const VERSION = '0.4.0';
 
 // Upload directory path.
 const UPLOAD_DIR_PATH = WP_CONTENT_DIR . '/scroll-anims/';

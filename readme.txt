@@ -4,7 +4,7 @@ Tags: animation, scroll, scroll animation, scroll effects, frame animation
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 8.0
-Stable tag: 0.3.0
+Stable tag: 0.4.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,7 +89,27 @@ Example: `[fancy_scroll_anim id="123" class="my-custom-class"]`
 
 == Changelog ==
 
+= 0.4.0 - 2026-02-01 =
+* Added copy shortcode button in settings meta box
+* Added visual frame count badge with checkmark icon
+* Added animation preview modal with play/pause controls
+* Added frame scrubber slider for manual preview
+* Added empty state message for first-time users
+* Added dashicon to shortcode admin column
+* Enhanced admin UX with improved visual feedback
+* Performance improvements for preview functionality
+
 = 0.3.0 - 2026-02-01 =
+* Added complete scroll animation engine with IntersectionObserver
+* Implemented fractional loop count support (0.1 to 10.0)
+* Added all easing functions (linear, ease-in, ease-out, ease-in-out)
+* Implemented bidirectional playback (forward/reverse with scroll)
+* Added requestAnimationFrame optimization for smooth performance
+* Fixed meta box settings save functionality
+* Added frame preloading for smooth playback
+* Full PHPCS code standards compliance
+
+= 0.2.0 - 2026-02-01 =
 * Added bulk image upload with drag-and-drop support
 * Implemented AJAX upload with real-time progress tracking
 * Added file naming parser (extracts frame index from filename)
@@ -99,13 +119,6 @@ Example: `[fancy_scroll_anim id="123" class="my-custom-class"]`
 * Automatic frame ordering by index
 * Store frame metadata (paths, count, dimensions)
 * Support for WebP, JPG, and PNG formats
-
-= 0.2.0 - 2026-02-01 =
-* Refactored main plugin file to follow WordPress coding standards
-* Moved constants to main plugin file
-* Added WordPress readme.txt
-* Added CHANGELOG.md for version tracking
-* Improved code documentation
 
 = 0.1.0 - 2026-02-01 =
 * Initial development release

@@ -1,9 +1,9 @@
 # Project Tracker
 
-**Version:** 0.3.0
+**Version:** 0.4.0
 **Last Updated:** 1 February 2026
-**Current Phase:** Milestone 3 (Shortcode System)
-**Overall Progress:** 33%
+**Current Phase:** Milestone 5 (Admin Polish)
+**Overall Progress:** 80%
 
 ---
 
@@ -27,11 +27,31 @@
 - None
 
 ### Up Next
-- Test shortcode rendering with uploaded frames
-- Frontend animation engine
-- Scroll detection with IntersectionObserver
+- Bulk frame info display before upload
+- Drag-drop frame reordering
+- Bulk select and delete frames
+- Settings page (global defaults)
 
-### Recently Completed (v0.2.0)
+### Recently Completed (v0.4.0 - Admin Polish)
+- ✅ Copy shortcode button in settings meta box
+- ✅ Visual frame count badge with checkmark
+- ✅ Animation preview player (play/pause with highlighting)
+- ✅ Empty state message for first-time users
+- ✅ Dashicon in shortcode admin column
+
+### Recently Completed (v0.3.0)
+- ✅ Shortcode rendering with uploaded frames
+- ✅ Frontend animation engine with IntersectionObserver
+- ✅ Scroll position to frame mapping
+- ✅ Bidirectional playback (forward/reverse)
+- ✅ All 4 easing functions (linear, ease-in, ease-out, ease-in-out)
+- ✅ Fractional loop count support (0.1 to 10.0)
+- ✅ requestAnimationFrame optimization
+- ✅ Meta box settings save fix
+- ✅ Frame preloading for smooth playback
+- ✅ PHPCS code standards compliance
+
+### Completed (v0.2.0)
 - ✅ Drag-and-drop bulk upload interface
 - ✅ AJAX upload with progress tracking
 - ✅ File naming parser (extracts frame index)
@@ -93,34 +113,42 @@
   - [ ] Play/pause controls (deferred to Milestone 4)
   - [ ] Scrubber to test frame sequence (deferred to Milestone 4)
 
-### Milestone 3: Shortcode System (0%)
+### Milestone 3: Shortcode System (100%) ✅
 **Goal:** Embed animations in pages/posts
 
-- [ ] Register `[fancy_scroll_anim]` shortcode
-- [ ] Shortcode parameters:
-  - [ ] `id` - Animation post ID (required)
-  - [ ] `class` - Additional CSS classes (optional)
-- [ ] Generate shortcode in admin (copy-to-clipboard)
-- [ ] Render animation container HTML (width: 100%, height: auto)
-- [ ] Load only required animation data (avoid loading all frames upfront)
+- [x] Register `[fancy_scroll_anim]` shortcode
+- [x] Shortcode parameters:
+  - [x] `id` - Animation post ID (required)
+  - [x] `class` - Additional CSS classes (optional)
+- [x] Generate shortcode in admin (displayed in admin columns)
+- [x] Render animation container HTML (width: 100%, height: auto)
+- [x] Load frame data via data attributes for JavaScript
 
-### Milestone 4: Frontend Animation Engine (0%)
+### Milestone 4: Frontend Animation Engine (100%) ✅
 **Goal:** Scroll-triggered frame playback
 
-- [ ] Enqueue frontend JavaScript
-- [ ] Implement scroll listener with IntersectionObserver
-- [ ] Calculate scroll progress within viewport
-- [ ] Map scroll position to frame index
-- [ ] Preload frame images efficiently
-- [ ] Handle scroll direction (forward when scrolling down, reverse when scrolling up)
-- [ ] Implement configurable easing (linear, ease-in, ease-out, ease-in-out)
-- [ ] Support loop count (play animation N times within scroll range)
-- [ ] Performance optimization (debouncing, RAF)
-- [ ] Responsive image handling
+- [x] Enqueue frontend JavaScript
+- [x] Implement scroll listener with IntersectionObserver
+- [x] Calculate scroll progress within viewport
+- [x] Map scroll position to frame index
+- [x] Preload frame images efficiently
+- [x] Handle scroll direction (forward when scrolling down, reverse when scrolling up)
+- [x] Implement configurable easing (linear, ease-in, ease-out, ease-in-out)
+- [x] Support fractional loop count (0.1 to 10.0 in 0.1 increments)
+- [x] Performance optimization (requestAnimationFrame, passive listeners)
+- [x] Responsive image handling (aspect-ratio CSS)
 
-### Milestone 5: Admin Experience & Settings (0%)
+### Milestone 5: Admin Experience & Settings (20%)
 **Goal:** Polish admin interface and add configuration
 
+- [x] Copy shortcode button in settings meta box
+- [x] Frame count visual feedback
+- [x] Animation preview player (play/pause)
+- [x] Empty state message when no frames
+- [x] Dashicon in shortcode admin column
+- [ ] Bulk frame info display (before upload starts)
+- [ ] Drag-drop frame reordering in grid
+- [ ] Bulk select and delete frames
 - [ ] Settings page (optional global options)
   - [ ] Default easing function
   - [ ] Default loop count

@@ -108,7 +108,8 @@ class Post_Type {
 
 		if ( 'shortcode' === $column ) {
 			$result = sprintf(
-				'<code class="fsa-shortcode" style="cursor:pointer;" onclick="navigator.clipboard.writeText(\'[fancy_scroll_anim id=&quot;%d&quot;]\'); this.style.background=\'#d4edda\';" title="%s">[fancy_scroll_anim id="%d"]</code>',
+				'<span class="dashicons dashicons-admin-page" style="color:#2271b1; margin-right:4px;" title="%s"></span><code class="fsa-shortcode" style="cursor:pointer;" onclick="navigator.clipboard.writeText(\'[fancy_scroll_anim id=&quot;%d&quot;]\'); this.style.background=\'#d4edda\';" title="%s">[fancy_scroll_anim id="%d"]</code>',
+				esc_attr__( 'Click to copy', 'fancy-scroll-anims' ),
 				$post_id,
 				esc_attr__( 'Click to copy', 'fancy-scroll-anims' ),
 				$post_id

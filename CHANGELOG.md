@@ -5,7 +5,69 @@ All notable changes to Fancy Scroll Anims will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-02-01
+
+### Added
+- Copy shortcode button in Animation Settings meta box with clipboard integration
+- Visual frame count badge with checkmark icon and proper singular/plural text
+- Animation preview modal with professional overlay design
+- Play/Pause controls for animation preview
+- Frame scrubber slider for manual frame navigation
+- Frame counter showing current frame position (e.g., "1 / 20 frames")
+- Empty state message for first-time users with file naming examples
+- Dashicon (copy page icon) in shortcode admin column
+- Preview modal CSS with responsive design and animations
+- New localized strings: animationPreview, play, pause, frames, copied, copyFailed
+
+### Changed
+- Enhanced preview functionality from simple grid highlighting to full modal experience
+- Improved admin UX with better visual feedback and guidance
+- Updated button styling and layout in frames header
+- Refined admin templates for better accessibility
+
+### Technical Details
+- Modal uses dark overlay (85% opacity) with centered content
+- Preview viewport: 600px height, max 400px width for animation
+- Auto-play at 12 FPS when preview is activated
+- Keyboard-friendly (ESC to close modal)
+- Click outside modal to close
+- All code passes PHPCS WordPress Coding Standards
+
 ## [0.3.0] - 2026-02-01
+
+### Added
+- Complete scroll animation engine using IntersectionObserver API
+- Scroll position to frame index mapping with progress calculation
+- Bidirectional playback (forward when scrolling down, reverse when scrolling up)
+- Fractional loop count support (0.1 to 10.0 in 0.1 increments)
+- All four easing functions: linear, ease-in, ease-out, ease-in-out
+- Frame preloading for smooth playback
+- requestAnimationFrame optimization for performance
+- Frontend shortcode rendering with data attributes
+- Frontend JavaScript animation controller
+- Responsive image handling with aspect-ratio CSS
+- PHPCS configuration file (phpcs.xml)
+- Complete WordPress Coding Standards compliance
+
+### Changed
+- Loop count input accepts decimal values with step="0.1"
+- Loop count validation uses floatval() instead of absint()
+- JavaScript parses loop count as float instead of integer
+
+### Fixed
+- Meta box settings not saving (moved save_post hook registration to Plugin class)
+- Shortcode using wrong array index for first frame (changed from [0] to reset())
+- Firefox scroll-linked positioning warning (added requestAnimationFrame throttling)
+
+### Technical Details
+- IntersectionObserver monitors element visibility
+- Scroll progress mapped from viewport bottom to top
+- Passive scroll listeners for better performance
+- Ticking flag prevents redundant requestAnimationFrame calls
+- Animation plays through calculated percentage of total frames
+- Data stored in element attributes: data-frames, data-easing, data-loops
+
+## [0.2.0] - 2026-02-01
 
 ### Added
 - Bulk image upload interface with drag-and-drop support

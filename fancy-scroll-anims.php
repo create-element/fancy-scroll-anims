@@ -3,7 +3,7 @@
  * Plugin Name:       Fancy Scroll Anims
  * Plugin URI:        https://cookehouse.net/fancy-scroll-anims/
  * Description:       Add scroll-triggered frame-by-frame animations to your WordPress pages. Create stunning visual effects that respond to user scrolling.
- * Version:           0.3.0
+ * Version:           0.4.0
  * Requires at least: 6.0
  * Requires PHP:      8.0
  * Author:            Elliot Cooke

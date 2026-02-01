@@ -89,6 +89,9 @@ class Shortcode {
 			$aspect_ratio = sprintf( 'aspect-ratio: %d / %d;', absint( $width ), absint( $height ) );
 		}
 
+		// Get first frame (frames are indexed from 1).
+		$first_frame = reset( $frames );
+
 		// Render container.
 		$output = sprintf(
 			'<div class="%s" data-anim-id="%d" data-easing="%s" data-loops="%d" data-frames="%s" style="width: 100%%; %s"><img class="fsa-frame" src="%s" alt="%s" style="width: 100%%; height: auto; display: block;" /></div>',
@@ -98,7 +101,7 @@ class Shortcode {
 			absint( $loop_count ),
 			esc_attr( wp_json_encode( array_values( $frames ) ) ),
 			esc_attr( $aspect_ratio ),
-			esc_url( $frames[0] ?? '' ),
+			esc_url( $first_frame ),
 			esc_attr( get_the_title( $post_id ) )
 		);
 

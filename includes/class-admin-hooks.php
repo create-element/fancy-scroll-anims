@@ -87,6 +87,15 @@ class Admin_Hooks {
 			$loop_count = DEF_LOOP_COUNT;
 		}
 
+		// Shortcode display and copy button.
+		printf(
+			'<div class="fsa-shortcode-wrapper" style="margin-bottom:15px; padding:10px; background:#f0f0f1; border-radius:3px;"><p style="margin:0 0 8px;"><strong>%s</strong></p><code style="display:block; padding:8px; background:#fff; border:1px solid #ddd; border-radius:2px; margin-bottom:8px;">%s</code><button type="button" class="button button-secondary" id="fsa-copy-shortcode" data-shortcode="%s" style="width:100%%;"><span class="dashicons dashicons-admin-page" style="margin-top:3px;"></span> %s</button></div>',
+			esc_html__( 'Shortcode:', 'fancy-scroll-anims' ),
+			esc_html( sprintf( '[fancy_scroll_anim id="%d"]', $post->ID ) ),
+			esc_attr( sprintf( '[fancy_scroll_anim id="%d"]', $post->ID ) ),
+			esc_html__( 'Copy Shortcode', 'fancy-scroll-anims' )
+		);
+
 		printf(
 			'<p><label for="fsa_easing"><strong>%s</strong></label><br><select id="fsa_easing" name="fsa_easing" style="width:100%%;"><option value="linear"%s>%s</option><option value="ease-in"%s>%s</option><option value="ease-out"%s>%s</option><option value="ease-in-out"%s>%s</option></select></p>',
 			esc_html__( 'Easing Function:', 'fancy-scroll-anims' ),
@@ -101,14 +110,11 @@ class Admin_Hooks {
 		);
 
 		printf(
-			'<p><label for="fsa_loop_count"><strong>%s</strong></label><br><input type="number" id="fsa_loop_count" name="fsa_loop_count" value="%d" min="1" max="10" style="width:100%%;" /></p><p class="description">%s</p>',
+			'<p><label for="fsa_loop_count"><strong>%s</strong></label><br><input type="number" id="fsa_loop_count" name="fsa_loop_count" value="%s" min="0.1" max="10" step="0.1" style="width:100%%;" /></p><p class="description">%s</p>',
 			esc_html__( 'Loop Count:', 'fancy-scroll-anims' ),
-			absint( $loop_count ),
-			esc_html__( 'Number of times to play the animation within the scroll range.', 'fancy-scroll-anims' )
+			esc_attr( $loop_count ),
+			esc_html__( 'Number of times to play the animation within the scroll range. Supports decimals (e.g., 0.5, 2.5, 4).', 'fancy-scroll-anims' )
 		);
-
-		// Save handler.
-		add_action( 'save_post_' . POST_TYPE, array( $this, 'save_settings' ) );
 	}
 
 	/**
@@ -149,9 +155,9 @@ class Admin_Hooks {
 
 		// Save loop count.
 		if ( isset( $_POST['fsa_loop_count'] ) ) {
-			$loop_count = absint( $_POST['fsa_loop_count'] );
+			$loop_count = floatval( $_POST['fsa_loop_count'] );
 
-			if ( $loop_count > 0 && $loop_count <= 10 ) {
+			if ( $loop_count >= 0.1 && $loop_count <= 10 ) {
 				update_post_meta( $post_id, META_LOOP_COUNT, $loop_count );
 			}
 		}
@@ -198,11 +204,19 @@ class Admin_Hooks {
 				'deleteNonce'  => wp_create_nonce( NONCE_DELETE_FRAME ),
 				'uploadDirUrl' => UPLOAD_DIR_URL,
 				'strings'      => array(
-					'uploadError'   => __( 'Upload failed. Please try again.', 'fancy-scroll-anims' ),
-					'invalidFormat' => __( 'Invalid file format. Only WebP, JPG, and PNG are supported.', 'fancy-scroll-anims' ),
-					'deleteConfirm' => __( 'Are you sure you want to delete this frame?', 'fancy-scroll-anims' ),
+					'uploadError'      => __( 'Upload failed. Please try again.', 'fancy-scroll-anims' ),
+					'invalidFormat'    => __( 'Invalid file format. Only WebP, JPG, and PNG are supported.', 'fancy-scroll-anims' ),
+					'deleteConfirm'    => __( 'Are you sure you want to delete this frame?', 'fancy-scroll-anims' ),
 					/* translators: %d: Number of files selected */
-					'filesSelected' => __( '%d files selected', 'fancy-scroll-anims' ),
+					'filesSelected'    => __( '%d files selected', 'fancy-scroll-anims' ),
+					'preview'          => __( 'Preview', 'fancy-scroll-anims' ),
+					'stopPreview'      => __( 'Stop', 'fancy-scroll-anims' ),
+					'copied'           => __( 'Copied!', 'fancy-scroll-anims' ),
+					'copyFailed'       => __( 'Failed to copy shortcode.', 'fancy-scroll-anims' ),
+					'animationPreview' => __( 'Animation Preview', 'fancy-scroll-anims' ),
+					'play'             => __( 'Play', 'fancy-scroll-anims' ),
+					'pause'            => __( 'Pause', 'fancy-scroll-anims' ),
+					'frames'           => __( 'frames', 'fancy-scroll-anims' ),
 				),
 			)
 		);

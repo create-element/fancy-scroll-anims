@@ -2,7 +2,7 @@
 
 **Contributors:** Elliot Cooke  
 **Author URI:** https://cookehouse.net/  
-**Version:** 0.3.0  
+**Version:** 0.4.0  
 **Requires at least:** WordPress 6.0  
 **Tested up to:** 6.7  
 **Requires PHP:** 8.0  
@@ -131,7 +131,26 @@ Yes, the animations are fully responsive and work on all devices.
 
 ## Changelog
 
+### 0.4.0 - 2026-02-01
+- Added copy shortcode button in settings meta box with clipboard integration
+- Added visual frame count badge with checkmark icon
+- Added animation preview modal with play/pause controls and frame scrubber
+- Added empty state message for first-time users
+- Added dashicon to shortcode admin column
+- Enhanced admin UX with improved visual feedback
+- Performance improvements for preview functionality
+
 ### 0.3.0 - 2026-02-01
+- Added complete scroll animation engine with IntersectionObserver
+- Implemented fractional loop count support (0.1 to 10.0)
+- Added all easing functions (linear, ease-in, ease-out, ease-in-out)
+- Bidirectional playback (forward/reverse with scroll)
+- requestAnimationFrame optimization for performance
+- Fixed meta box settings save functionality
+- Frame preloading for smooth playback
+- Full PHPCS code standards compliance
+
+### 0.2.0 - 2026-02-01
 - Added bulk image upload with drag-and-drop support
 - Implemented AJAX upload with real-time progress tracking
 - File naming parser extracts frame index from filename
@@ -140,9 +159,6 @@ Yes, the animations are fully responsive and work on all devices.
 - Individual frame deletion functionality
 - Automatic frame ordering by index
 - Frame metadata storage (paths, count, dimensions)
-
-### 0.2.0 - 2026-02-01
-- Refactored main plugin file (removed namespace, added function prefixes)
 - Moved constants to main plugin file for clarity
 - Added WordPress-compatible readme.txt
 - Added CHANGELOG.md for version tracking

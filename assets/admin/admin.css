@@ -218,3 +218,99 @@
 .fsa-upload-errors .notice {
 	margin: 5px 0;
 }
+
+/* Preview Modal */
+.fsa-preview-modal {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.85);
+	z-index: 100000;
+	align-items: center;
+	justify-content: center;
+}
+
+.fsa-preview-modal.fsa-active {
+	display: flex;
+}
+
+.fsa-preview-content {
+	background: #fff;
+	border-radius: 8px;
+	padding: 20px;
+	max-width: 90%;
+	max-height: 90%;
+	position: relative;
+	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.fsa-preview-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 15px;
+	padding-bottom: 10px;
+	border-bottom: 2px solid #e0e0e1;
+}
+
+.fsa-preview-header h3 {
+	margin: 0;
+	font-size: 18px;
+}
+
+.fsa-preview-close {
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 5px;
+	color: #646970;
+	font-size: 24px;
+	line-height: 1;
+}
+
+.fsa-preview-close:hover {
+	color: #2271b1;
+}
+
+.fsa-preview-viewport {
+	background: #f9f9f9;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	height: 600px;
+	overflow: hidden;
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.fsa-preview-animation {
+	max-width: 400px;
+	max-height: 500px;
+	width: 100%;
+}
+
+.fsa-preview-animation img {
+	width: 100%;
+	height: auto;
+	display: block;
+}
+
+.fsa-preview-controls {
+	margin-top: 15px;
+	text-align: center;
+}
+
+.fsa-preview-slider {
+	width: 100%;
+	margin: 10px 0;
+}
+
+.fsa-preview-info {
+	color: #646970;
+	font-size: 13px;
+	margin-top: 10px;
+}

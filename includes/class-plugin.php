@@ -94,6 +94,7 @@ class Plugin {
 		if ( is_admin() ) {
 			add_action( 'add_meta_boxes', array( $this->get_admin_hooks(), 'add_meta_boxes' ) );
 			add_action( 'admin_enqueue_scripts', array( $this->get_admin_hooks(), 'enqueue_assets' ) );
+			add_action( 'save_post_' . POST_TYPE, array( $this->get_admin_hooks(), 'save_settings' ) );
 
 			// AJAX handlers.
 			add_action( 'wp_ajax_fsa_upload_frame', array( $this->get_admin_hooks(), 'ajax_upload_frames' ) );
