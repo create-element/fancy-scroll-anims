@@ -1,0 +1,17 @@
+/**
+ * Fancy Scroll Anims - Frontend Styles
+ *
+ * @package Fancy_Scroll_Anims
+ */
+
+.fancy-scroll-anim {
+	position: relative;
+	overflow: hidden;
+	width: 100%;
+}
+
+.fancy-scroll-anim img.fsa-frame {
+	width: 100%;
+	height: auto;
+	display: block;
+}
