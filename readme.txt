@@ -4,7 +4,7 @@ Tags: animation, scroll, scroll animation, scroll effects, frame animation
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 8.0
-Stable tag: 0.2.0
+Stable tag: 0.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,6 +88,17 @@ Example: `[fancy_scroll_anim id="123" class="my-custom-class"]`
 3. Example scroll animation on frontend
 
 == Changelog ==
+
+= 0.3.0 - 2026-02-01 =
+* Added bulk image upload with drag-and-drop support
+* Implemented AJAX upload with real-time progress tracking
+* Added file naming parser (extracts frame index from filename)
+* Frame validation: format, size (5MB max), and MIME type checking
+* Thumbnail grid display with frame numbers
+* Individual frame deletion with confirmation
+* Automatic frame ordering by index
+* Store frame metadata (paths, count, dimensions)
+* Support for WebP, JPG, and PNG formats
 
 = 0.2.0 - 2026-02-01 =
 * Refactored main plugin file to follow WordPress coding standards

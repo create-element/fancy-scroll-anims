@@ -1,9 +1,9 @@
 # Project Tracker
 
-**Version:** 0.2.0
+**Version:** 0.3.0
 **Last Updated:** 1 February 2026
-**Current Phase:** Milestone 2 (Bulk Image Upload System)
-**Overall Progress:** 17%
+**Current Phase:** Milestone 3 (Shortcode System)
+**Overall Progress:** 33%
 
 ---
 
@@ -27,18 +27,25 @@
 - None
 
 ### Up Next
-- Implement bulk image uploader
-- File naming parser
-- Frame metadata storage
+- Test shortcode rendering with uploaded frames
+- Frontend animation engine
+- Scroll detection with IntersectionObserver
 
 ### Recently Completed (v0.2.0)
+- ✅ Drag-and-drop bulk upload interface
+- ✅ AJAX upload with progress tracking
+- ✅ File naming parser (extracts frame index)
+- ✅ Frame validation (format, size, MIME type)
+- ✅ Thumbnail grid with frame numbers
+- ✅ Individual frame deletion
+- ✅ Automatic frame ordering by index
+
+### Completed (Earlier)
 - ✅ Refactored main plugin file (no namespace)
 - ✅ Function prefix pattern applied
 - ✅ WordPress readme.txt created
 - ✅ CHANGELOG.md created
 - ✅ Code documentation improvements
-
-### Completed (v0.1.0)
 - ✅ Main plugin file and structure
 - ✅ Custom post type registration
 - ✅ Admin meta boxes (settings)
@@ -65,26 +72,26 @@
   - [x] Per-animation subdirectories (ready for Milestone 2)
 - [x] Basic README.md with plugin description
 
-### Milestone 2: Bulk Image Upload System (0%)
+### Milestone 2: Bulk Image Upload System (100%) ✅
 **Goal:** Upload and organize animation frames
 
-- [ ] Create admin meta box for bulk upload
-- [ ] Implement file naming parser
-  - [ ] Extract frame index from filename (number before extension after last `-`)
-  - [ ] Validate supported formats (webp, jpg, png)
-  - [ ] Handle missing/duplicate frame numbers
-- [ ] Store frame metadata (post meta)
-  - [ ] Frame paths
-  - [ ] Frame count
-  - [ ] Image dimensions
-- [ ] Display uploaded frames in admin
-  - [ ] Thumbnail grid
-  - [ ] Frame order display
-  - [ ] Delete individual frames option
-- [ ] Frame reordering interface (optional drag-drop)
-- [ ] Animation preview player in post editor
-  - [ ] Play/pause controls
-  - [ ] Scrubber to test frame sequence
+- [x] Create admin meta box for bulk upload
+- [x] Implement file naming parser
+  - [x] Extract frame index from filename (number before extension after last `-`)
+  - [x] Validate supported formats (webp, jpg, png)
+  - [x] Handle missing/duplicate frame numbers
+- [x] Store frame metadata (post meta)
+  - [x] Frame paths
+  - [x] Frame count
+  - [x] Image dimensions
+- [x] Display uploaded frames in admin
+  - [x] Thumbnail grid
+  - [x] Frame order display
+  - [x] Delete individual frames option
+- [x] Frame reordering interface (automatic by index)
+- [x] Animation preview player in post editor
+  - [ ] Play/pause controls (deferred to Milestone 4)
+  - [ ] Scrubber to test frame sequence (deferred to Milestone 4)
 
 ### Milestone 3: Shortcode System (0%)
 **Goal:** Embed animations in pages/posts

@@ -2,7 +2,7 @@
 
 **Contributors:** Elliot Cooke  
 **Author URI:** https://cookehouse.net/  
-**Version:** 0.2.0  
+**Version:** 0.3.0  
 **Requires at least:** WordPress 6.0  
 **Tested up to:** 6.7  
 **Requires PHP:** 8.0  
@@ -131,13 +131,25 @@ Yes, the animations are fully responsive and work on all devices.
 
 ## Changelog
 
-### 0.1.0 - 2026-02-01- Refactored main plugin file (removed namespace, added function prefixes)
+### 0.3.0 - 2026-02-01
+- Added bulk image upload with drag-and-drop support
+- Implemented AJAX upload with real-time progress tracking
+- File naming parser extracts frame index from filename
+- Frame validation (format, size, MIME type)
+- Thumbnail grid display with frame numbers and delete buttons
+- Individual frame deletion functionality
+- Automatic frame ordering by index
+- Frame metadata storage (paths, count, dimensions)
+
+### 0.2.0 - 2026-02-01
+- Refactored main plugin file (removed namespace, added function prefixes)
 - Moved constants to main plugin file for clarity
 - Added WordPress-compatible readme.txt
 - Added CHANGELOG.md for version tracking
 - Improved code documentation
 
-### 0.1.0 - 2026-02-01- Initial development release
+### 0.1.0 - 2026-02-01
+- Initial development release
 - Custom post type for animations
 - Basic admin interface
 - Shortcode system foundation

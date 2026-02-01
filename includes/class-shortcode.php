@@ -75,7 +75,7 @@ class Shortcode {
 		}
 
 		// Build CSS classes.
-		$css_classes   = array( 'fancy-scroll-anim' );
+		$css_classes  = array( 'fancy-scroll-anim' );
 		$custom_class = sanitize_text_field( $atts['class'] );
 
 		if ( ! empty( $custom_class ) ) {

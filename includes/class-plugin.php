@@ -94,6 +94,10 @@ class Plugin {
 		if ( is_admin() ) {
 			add_action( 'add_meta_boxes', array( $this->get_admin_hooks(), 'add_meta_boxes' ) );
 			add_action( 'admin_enqueue_scripts', array( $this->get_admin_hooks(), 'enqueue_assets' ) );
+
+			// AJAX handlers.
+			add_action( 'wp_ajax_fsa_upload_frame', array( $this->get_admin_hooks(), 'ajax_upload_frames' ) );
+			add_action( 'wp_ajax_fsa_delete_frame', array( $this->get_admin_hooks(), 'ajax_delete_frame' ) );
 		}
 
 		// Shortcode.

@@ -5,6 +5,35 @@ All notable changes to Fancy Scroll Anims will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-02-01
+
+### Added
+- Bulk image upload interface with drag-and-drop support
+- Real-time AJAX upload with progress bar and percentage tracking
+- File naming parser to extract frame index from filenames (e.g., `product-5.webp` → frame 5)
+- Comprehensive file validation (format, size, MIME type)
+- Thumbnail grid display showing all uploaded frames
+- Frame number badges on thumbnails
+- Individual frame deletion with confirmation dialog
+- "Add More Frames" functionality to existing animations
+- Automatic frame ordering by extracted index
+- Frame metadata storage in post meta (`_fsa_frames`, `_fsa_frame_count`, `_fsa_frame_width`, `_fsa_frame_height`)
+- Admin template system for meta boxes (`admin-templates/meta-box-upload.php`)
+- AJAX endpoints: `wp_ajax_fsa_upload_frame` and `wp_ajax_fsa_delete_frame`
+
+### Changed
+- Enhanced admin JavaScript with ES6 class-based upload handler
+- Improved admin CSS with progress bar styling and grid layout
+- Updated Admin_Hooks class with upload/delete methods and validation logic
+
+### Technical Details
+- Uses native XMLHttpRequest for upload progress events (no external libraries)
+- HTML5 File API for drag-and-drop
+- File size limit: 5MB per frame
+- Supported formats: WebP, JPG, JPEG, PNG
+- Files stored in `wp-content/scroll-anims/{post-id}/frame-{index}.{ext}`
+- Automatic zero-padding in filenames (frame-001.webp)
+
 ## [0.2.0] - 2026-02-01
 
 ### Changed
@@ -67,15 +96,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `dev-notes/00-project-tracker.md` - Development roadmap
 
 ## [Unreleased]
-
-### Planned for v0.3.0 - Bulk Upload System
-- Drag-and-drop frame upload interface
-- File naming parser to extract frame indices
-- Frame metadata storage (paths, count, dimensions)
-- Thumbnail grid display in admin
-- Individual frame deletion
-- Frame reordering interface
-- Animation preview player in post editor
 
 ### Planned for v0.4.0 - Animation Engine
 - Full scroll-based playback implementation

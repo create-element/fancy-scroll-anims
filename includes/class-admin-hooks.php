@@ -63,10 +63,7 @@ class Admin_Hooks {
 	 * @return void
 	 */
 	public function render_frames_meta_box( \WP_Post $post ): void {
-		printf(
-			'<p>%s</p>',
-			esc_html__( 'Frame upload functionality coming in Milestone 2.', 'fancy-scroll-anims' )
-		);
+		require_once FANCY_SCROLL_ANIMS_DIR . 'admin-templates/meta-box-upload.php';
 	}
 
 	/**
@@ -123,7 +120,7 @@ class Admin_Hooks {
 	 */
 	public function save_settings( int $post_id ): void {
 		// Verify nonce.
-		if ( ! isset( $_POST['fsa_settings_nonce'] ) || ! wp_verify_nonce( $_POST['fsa_settings_nonce'], 'fsa_save_settings' ) ) {
+		if ( ! isset( $_POST['fsa_settings_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['fsa_settings_nonce'] ) ), 'fsa_save_settings' ) ) {
 			return;
 		}
 
@@ -196,9 +193,292 @@ class Admin_Hooks {
 			'fancy-scroll-anims-admin',
 			'fsaAdmin',
 			array(
-				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-				'nonce'   => wp_create_nonce( NONCE_UPLOAD_FRAMES ),
+				'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
+				'nonce'        => wp_create_nonce( NONCE_UPLOAD_FRAMES ),
+				'deleteNonce'  => wp_create_nonce( NONCE_DELETE_FRAME ),
+				'uploadDirUrl' => UPLOAD_DIR_URL,
+				'strings'      => array(
+					'uploadError'   => __( 'Upload failed. Please try again.', 'fancy-scroll-anims' ),
+					'invalidFormat' => __( 'Invalid file format. Only WebP, JPG, and PNG are supported.', 'fancy-scroll-anims' ),
+					'deleteConfirm' => __( 'Are you sure you want to delete this frame?', 'fancy-scroll-anims' ),
+					/* translators: %d: Number of files selected */
+					'filesSelected' => __( '%d files selected', 'fancy-scroll-anims' ),
+				),
 			)
 		);
+	}
+
+	/**
+	 * Handle AJAX frame upload.
+	 *
+	 * @since 0.2.0
+	 *
+	 * @return void
+	 */
+	public function ajax_upload_frames(): void {
+		check_ajax_referer( NONCE_UPLOAD_FRAMES, 'nonce' );
+
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'fancy-scroll-anims' ) ) );
+		}
+
+		// Nonce verified above.
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified above
+
+		$post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
+
+		if ( ! $post_id ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid post ID.', 'fancy-scroll-anims' ) ) );
+		}
+
+		// Verify post exists and is correct type.
+		$post = get_post( $post_id );
+
+		if ( ! $post || POST_TYPE !== $post->post_type ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid animation post.', 'fancy-scroll-anims' ) ) );
+		}
+
+		// Check file upload.
+		if ( empty( $_FILES['file'] ) ) {
+			wp_send_json_error( array( 'message' => __( 'No file uploaded.', 'fancy-scroll-anims' ) ) );
+		}
+
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File upload, validated in validate_frame_file().
+		$file = $_FILES['file'];
+
+		// Validate file.
+		$validation = $this->validate_frame_file( $file );
+
+		if ( is_wp_error( $validation ) ) {
+			wp_send_json_error( array( 'message' => $validation->get_error_message() ) );
+		}
+
+		// Parse frame index from filename.
+		$frame_index = $this->parse_frame_index( $file['name'] );
+
+		if ( is_wp_error( $frame_index ) ) {
+			wp_send_json_error( array( 'message' => $frame_index->get_error_message() ) );
+		}
+
+		// Create upload directory for this animation.
+		$upload_dir = UPLOAD_DIR_PATH . $post_id . '/';
+
+		if ( ! file_exists( $upload_dir ) ) {
+			wp_mkdir_p( $upload_dir );
+		}
+
+		// Generate filename.
+		$extension = strtolower( pathinfo( $file['name'], PATHINFO_EXTENSION ) );
+		$filename  = sprintf( 'frame-%03d.%s', $frame_index, $extension );
+		$filepath  = $upload_dir . $filename;
+
+		// Move uploaded file.
+		if ( ! move_uploaded_file( $file['tmp_name'], $filepath ) ) {
+			wp_send_json_error( array( 'message' => __( 'Failed to save file.', 'fancy-scroll-anims' ) ) );
+		}
+
+		// Get image dimensions.
+		$image_size = getimagesize( $filepath );
+		$width      = $image_size[0] ?? 0;
+		$height     = $image_size[1] ?? 0;
+
+		// Update post meta.
+		$frames = get_post_meta( $post_id, META_FRAMES, true );
+
+		if ( ! is_array( $frames ) ) {
+			$frames = array();
+		}
+
+		$file_url               = UPLOAD_DIR_URL . $post_id . '/' . $filename;
+		$frames[ $frame_index ] = $file_url;
+
+		// Sort by index.
+		ksort( $frames );
+
+		update_post_meta( $post_id, META_FRAMES, $frames );
+		update_post_meta( $post_id, META_FRAME_COUNT, count( $frames ) );
+		update_post_meta( $post_id, META_FRAME_WIDTH, $width );
+		update_post_meta( $post_id, META_FRAME_HEIGHT, $height );
+
+		// phpcs:enable
+
+		wp_send_json_success(
+			array(
+				'frameIndex' => $frame_index,
+				'frameUrl'   => $file_url,
+				'frameCount' => count( $frames ),
+				'width'      => $width,
+				'height'     => $height,
+			)
+		);
+	}
+
+	/**
+	 * Handle AJAX frame deletion.
+	 *
+	 * @since 0.2.0
+	 *
+	 * @return void
+	 */
+	public function ajax_delete_frame(): void {
+		check_ajax_referer( NONCE_DELETE_FRAME, 'nonce' );
+
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'fancy-scroll-anims' ) ) );
+		}
+
+		// Nonce verified above.
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified above
+
+		$post_id     = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
+		$frame_index = isset( $_POST['frame_index'] ) ? absint( $_POST['frame_index'] ) : null;
+
+		if ( ! $post_id || is_null( $frame_index ) ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid parameters.', 'fancy-scroll-anims' ) ) );
+		}
+
+		// Get frames.
+		$frames = get_post_meta( $post_id, META_FRAMES, true );
+
+		if ( ! is_array( $frames ) || ! isset( $frames[ $frame_index ] ) ) {
+			wp_send_json_error( array( 'message' => __( 'Frame not found.', 'fancy-scroll-anims' ) ) );
+		}
+
+		// Delete file.
+		$frame_url  = $frames[ $frame_index ];
+		$frame_path = str_replace( UPLOAD_DIR_URL, UPLOAD_DIR_PATH, $frame_url );
+
+		if ( file_exists( $frame_path ) ) {
+			wp_delete_file( $frame_path );
+		}
+
+		// Remove from array.
+		unset( $frames[ $frame_index ] );
+
+		// Update meta.
+		update_post_meta( $post_id, META_FRAMES, $frames );
+		update_post_meta( $post_id, META_FRAME_COUNT, count( $frames ) );
+
+		// phpcs:enable
+
+		wp_send_json_success(
+			array(
+				'frameCount' => count( $frames ),
+			)
+		);
+	}
+
+	/**
+	 * Validate uploaded frame file.
+	 *
+	 * @since 0.2.0
+	 *
+	 * @param array<string, mixed> $file Uploaded file data.
+	 *
+	 * @return true|\WP_Error True on success, WP_Error on failure.
+	 */
+	private function validate_frame_file( array $file ) {
+		$result = null;
+
+		// Check upload errors.
+		if ( UPLOAD_ERR_OK !== $file['error'] ) {
+			$result = new \WP_Error( 'upload_error', __( 'File upload error.', 'fancy-scroll-anims' ) );
+		}
+
+		// Check file extension.
+		if ( is_null( $result ) ) {
+			$extension     = strtolower( pathinfo( $file['name'], PATHINFO_EXTENSION ) );
+			$valid_formats = SUPPORTED_FORMATS;
+
+			if ( ! in_array( $extension, $valid_formats, true ) ) {
+				$result = new \WP_Error(
+					'invalid_format',
+					sprintf(
+						/* translators: %s: Comma-separated list of supported formats */
+						__( 'Invalid file format. Supported: %s', 'fancy-scroll-anims' ),
+						implode( ', ', $valid_formats )
+					)
+				);
+			}
+		}
+
+		// Check file size (max 5MB).
+		if ( is_null( $result ) && $file['size'] > 5 * 1024 * 1024 ) {
+			$result = new \WP_Error( 'file_too_large', __( 'File size exceeds 5MB limit.', 'fancy-scroll-anims' ) );
+		}
+
+		// Check mime type.
+		if ( is_null( $result ) ) {
+			$finfo     = finfo_open( FILEINFO_MIME_TYPE );
+			$mime_type = finfo_file( $finfo, $file['tmp_name'] );
+			finfo_close( $finfo );
+
+			$valid_mimes = array( 'image/webp', 'image/jpeg', 'image/png' );
+
+			if ( ! in_array( $mime_type, $valid_mimes, true ) ) {
+				$result = new \WP_Error( 'invalid_mime', __( 'Invalid file type.', 'fancy-scroll-anims' ) );
+			}
+		}
+
+		if ( is_null( $result ) ) {
+			$result = true;
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Parse frame index from filename.
+	 *
+	 * @since 0.2.0
+	 *
+	 * @param string $filename Uploaded filename.
+	 *
+	 * @return int|\WP_Error Frame index on success, WP_Error on failure.
+	 */
+	private function parse_frame_index( string $filename ) {
+		$result = null;
+
+		// Remove extension.
+		$name_without_ext = pathinfo( $filename, PATHINFO_FILENAME );
+
+		// Find last dash.
+		$last_dash_pos = strrpos( $name_without_ext, '-' );
+
+		if ( false === $last_dash_pos ) {
+			$result = new \WP_Error(
+				'invalid_filename',
+				__( 'Filename must contain frame number after last dash (e.g., animation-1.webp)', 'fancy-scroll-anims' )
+			);
+		}
+
+		// Extract number after last dash.
+		if ( is_null( $result ) ) {
+			$number_part = substr( $name_without_ext, $last_dash_pos + 1 );
+
+			if ( ! is_numeric( $number_part ) ) {
+				$result = new \WP_Error(
+					'invalid_frame_number',
+					__( 'Frame number must be numeric (e.g., animation-1.webp)', 'fancy-scroll-anims' )
+				);
+			}
+		}
+
+		if ( is_null( $result ) ) {
+			$frame_index = absint( $number_part );
+
+			if ( $frame_index < 1 ) {
+				$result = new \WP_Error(
+					'invalid_frame_index',
+					__( 'Frame number must be greater than 0.', 'fancy-scroll-anims' )
+				);
+			}
+		}
+
+		if ( is_null( $result ) ) {
+			$result = $frame_index;
+		}
+
+		return $result;
 	}
 }

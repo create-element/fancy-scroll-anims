@@ -3,7 +3,7 @@
  * Plugin Name:       Fancy Scroll Anims
  * Plugin URI:        https://cookehouse.net/fancy-scroll-anims/
  * Description:       Add scroll-triggered frame-by-frame animations to your WordPress pages. Create stunning visual effects that respond to user scrolling.
- * Version:           0.2.0
+ * Version:           0.3.0
  * Requires at least: 6.0
  * Requires PHP:      8.0
  * Author:            Elliot Cooke
@@ -67,10 +67,10 @@ add_action( 'plugins_loaded', 'fancy_scroll_anims_init_plugin' );
 function fancy_scroll_anims_activate_plugin(): void {
 	// Create upload directory.
 	$upload_dir = WP_CONTENT_DIR . '/scroll-anims';
-	
+
 	if ( ! file_exists( $upload_dir ) ) {
 		wp_mkdir_p( $upload_dir );
-		
+
 		// Add .htaccess for direct access.
 		$htaccess = $upload_dir . '/.htaccess';
 		if ( ! file_exists( $htaccess ) ) {
@@ -78,16 +78,18 @@ function fancy_scroll_anims_activate_plugin(): void {
 			$content .= '<IfModule mod_rewrite.c>' . PHP_EOL;
 			$content .= 'RewriteEngine Off' . PHP_EOL;
 			$content .= '</IfModule>' . PHP_EOL;
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents -- Simple file write during activation.
 			file_put_contents( $htaccess, $content );
 		}
-		
+
 		// Add index.php for security.
 		$index = $upload_dir . '/index.php';
 		if ( ! file_exists( $index ) ) {
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents -- Simple file write during activation.
 			file_put_contents( $index, '<?php // Silence is golden.' );
 		}
 	}
-	
+
 	// Flush rewrite rules for custom post type.
 	flush_rewrite_rules();
 }

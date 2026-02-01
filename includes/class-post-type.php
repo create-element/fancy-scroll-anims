@@ -134,6 +134,7 @@ class Post_Type {
 		}
 
 		if ( ! is_null( $result ) ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Already escaped via sprintf/esc_* functions above.
 			echo $result;
 		}
 	}
